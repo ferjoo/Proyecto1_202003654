@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane id="AnchorPane" prefHeight="700.0" prefWidth="900.0" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.ipc1.proyecto1_202003654.DeleteTeacherController">
+   <children>
+      <ComboBox fx:id="teacherSelectedCombo" layoutX="215.0" layoutY="98.0" prefHeight="46.0" prefWidth="453.0" promptText="Seleccionar un profesor" />
+      <Pane layoutX="216.0" layoutY="152.0" prefHeight="495.0" prefWidth="453.0" style="-fx-border-color: black; -fx-border-radius: 5px; -fx-background-color: white;">
+         <children>
+            <TextField fx:id="codeInput" editable="false" layoutX="63.0" layoutY="71.0" prefHeight="39.0" prefWidth="327.0" promptText="Codigo">
+               <font>
+                  <Font size="20.0" />
+               </font>
+            </TextField>
+            <TextField fx:id="nameInput" editable="false" layoutX="63.0" layoutY="130.0" prefHeight="39.0" prefWidth="327.0" promptText="Nombre">
+               <font>
+                  <Font size="20.0" />
+               </font>
+            </TextField>
+            <TextField fx:id="lastNameInput" editable="false" layoutX="63.0" layoutY="188.0" prefHeight="39.0" prefWidth="327.0" promptText="Apellido">
+               <font>
+                  <Font size="20.0" />
+               </font>
+            </TextField>
+            <TextField fx:id="emailInput" editable="false" layoutX="63.0" layoutY="248.0" prefHeight="39.0" prefWidth="327.0" promptText="Correo">
+               <font>
+                  <Font size="20.0" />
+               </font>
+            </TextField>
+            <ComboBox fx:id="genderCombo" disable="true" layoutX="63.0" layoutY="299.0" prefHeight="39.0" prefWidth="327.0" promptText="Genero" />
+            <Button fx:id="deleteButton" layoutX="63.0" layoutY="397.0" mnemonicParsing="false" onAction="#onDelete" prefHeight="46.0" prefWidth="327.0" style="-fx-background-color: #c11515; -fx-font-weight: bold;" text="ELIMINAR" textFill="WHITE">
+               <font>
+                  <Font size="20.0" />
+               </font>
+            </Button>
+         </children>
+      </Pane>
+      <Button fx:id="backButton" layoutX="762.0" layoutY="640.0" mnemonicParsing="false" onAction="#onBack" prefHeight="46.0" prefWidth="45.0" style="-fx-border-radius: 50%; -fx-border-color: black; -fx-background-color: white;">
+         <graphic>
+            <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../../../assets/back-svgrepo-com.png" />
+               </image>
+            </ImageView>
+         </graphic>
+      </Button>
+      <Button fx:id="logoutButton" layoutX="820.0" layoutY="640.0" mnemonicParsing="false" onAction="#onLogout" prefHeight="46.0" prefWidth="45.0" style="-fx-border-radius: 50%; -fx-border-color: black; -fx-background-color: white;">
+         <graphic>
+            <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../../../assets/logout-svgrepo-com.png" />
+               </image>
+            </ImageView>
+         </graphic>
+      </Button>
+      <Label layoutX="279.0" layoutY="37.0" text="Eliminar profesor">
+         <font>
+            <Font size="38.0" />
+         </font>
+      </Label>
+   </children>
+</AnchorPane>

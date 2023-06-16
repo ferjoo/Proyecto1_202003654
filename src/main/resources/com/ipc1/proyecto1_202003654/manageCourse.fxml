@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+
+<AnchorPane id="AnchorPane" prefHeight="700.0" prefWidth="900.0" style="-fx-background-color: white;" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/20.0.1" fx:controller="com.ipc1.proyecto1_202003654.ManageCourseController">
+   <children>
+      <Label fx:id="courseNameLabel" layoutX="353.0" layoutY="54.0" prefHeight="46.0" prefWidth="194.0">
+         <font>
+            <Font size="38.0" />
+         </font>
+      </Label>
+      <Button fx:id="backButton" layoutX="762.0" layoutY="640.0" mnemonicParsing="false" onAction="#onBack" prefHeight="46.0" prefWidth="45.0" style="-fx-border-radius: 50%; -fx-border-color: black; -fx-background-color: white;">
+         <graphic>
+            <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../../../assets/back-svgrepo-com.png" />
+               </image>
+            </ImageView>
+         </graphic>
+      </Button>
+      <Button fx:id="logoutButton" layoutX="820.0" layoutY="640.0" mnemonicParsing="false" onAction="#onLogout" prefHeight="46.0" prefWidth="45.0" style="-fx-border-radius: 50%; -fx-border-color: black; -fx-background-color: white;">
+         <graphic>
+            <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../../../assets/logout-svgrepo-com.png" />
+               </image>
+            </ImageView>
+         </graphic>
+      </Button>
+   </children>
+</AnchorPane>
