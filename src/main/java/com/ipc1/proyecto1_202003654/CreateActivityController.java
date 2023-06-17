@@ -29,6 +29,7 @@ public class CreateActivityController implements Initializable {
     @FXML
     private TextField valueInput;
 
+    private Double totalPoints = ManageCourseController.getTotalActivitiesPoints();
     /**
      * Initializes the controller class.
      */
@@ -49,28 +50,33 @@ public class CreateActivityController implements Initializable {
     
     @FXML
     public void onSave(ActionEvent event) throws IOException {
-        double totalPoints = ManageCourseController.getTotalActivitiesPoints();
 
-        if (totalPoints < 100.00) {
-            // Get the values from the text fields
-            String name = nameInput.getText();
-            String description = descriptionInput.getText();
-            double value = 0.0;
+        // Get the values from the text fields
+        String name = nameInput.getText();
+        String description = descriptionInput.getText();
+        double value = 0.0;
 
-            // Validate and parse the value from the text field
-            try {
-                value = Double.parseDouble(valueInput.getText());
-            } catch (NumberFormatException e) {
-                // Show an error alert if the value is not a valid number
-                showAlert("Valor inválido", "Por favor, ingrese un número válido para el valor.");
-                return;
-            }
+        // Validate and parse the value from the text field
+        try {
+            value = Double.parseDouble(valueInput.getText());
+        } catch (NumberFormatException e) {
+            // Show an error alert if the value is not a valid number
+            showAlert("Valor inválido", "Por favor, ingrese un número válido para el valor.");
+            return;
+        }
 
+        // Calculate the updated total points if the course is added
+        double tempTotalPoints = totalPoints + value;
+
+        if (tempTotalPoints <= 100.00) {
             // Create a new CourseActivity object
             CourseActivity activity = new CourseActivity(-1, name, description, value);
 
             // Add the activity using the CourseActivityManager
             ManageCourseController.addCourseActivity(activity);
+
+            // Update the totalPoints variable
+            totalPoints = tempTotalPoints;
 
             // Show a success alert
             showAlert("Actividad creada", "La actividad se ha creado exitosamente.");
@@ -79,14 +85,9 @@ public class CreateActivityController implements Initializable {
             nameInput.clear();
             descriptionInput.clear();
             valueInput.clear();
-        } else if (totalPoints + Double.parseDouble(valueInput.getText()) > 100.00) {
+        } else {
             // Show an alert when adding the new activity would exceed the total points limit
             showAlert("Límite de puntos excedido", "Agregar esta actividad excedería el límite máximo de 100.00 puntos.");
-            return;
-        } else {
-            // Show an alert when the total points have reached the limit
-            showAlert("Límite de puntos alcanzado", "El total de puntos ha alcanzado el límite máximo de 100.00.");
-            App.setRoot("manageCourse");
         }
     }
 
