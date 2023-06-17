@@ -35,11 +35,11 @@
             <Font size="24.0" />
          </font>
       </Label>
-      <TableView fx:id="studentsTable1" layoutX="566.0" layoutY="131.0" prefHeight="194.0" prefWidth="320.0">
+      <TableView fx:id="activitiesTable" layoutX="566.0" layoutY="131.0" prefHeight="194.0" prefWidth="320.0">
          <columns>
-            <TableColumn fx:id="codeColumn1" prefWidth="76.0" text="Nombre" />
-            <TableColumn fx:id="nameColumn1" prefWidth="158.0" text="Decripcion" />
-            <TableColumn fx:id="gradesColumn1" prefWidth="81.0" text="Puntos" />
+            <TableColumn fx:id="activityNameColumn" prefWidth="76.0" text="Nombre" />
+            <TableColumn fx:id="descriptionColumn" prefWidth="158.0" text="Decripcion" />
+            <TableColumn fx:id="pointsColumn" prefWidth="81.0" text="Puntos" />
          </columns>
       </TableView>
       <Label layoutX="717.0" layoutY="330.0" text="Acumulado">
@@ -47,7 +47,7 @@
             <Font size="16.0" />
          </font>
       </Label>
-      <Label layoutX="832.0" layoutY="330.0" prefHeight="20.0" prefWidth="54.0">
+      <Label fx:id="totalActivitiesPointsLabel" layoutX="832.0" layoutY="330.0" prefHeight="20.0" prefWidth="54.0">
          <font>
             <Font size="16.0" />
          </font>

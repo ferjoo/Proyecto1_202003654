@@ -1,6 +1,7 @@
 com/ipc1/proyecto1_202003654/TeachersAdminController.class
 models/Student.class
 models/GenderReportRow.class
+com/ipc1/proyecto1_202003654/CreateActivityController.class
 com/ipc1/proyecto1_202003654/CreateCourseController.class
 com/ipc1/proyecto1_202003654/SecondaryController.class
 com/ipc1/proyecto1_202003654/ManageStudentController.class

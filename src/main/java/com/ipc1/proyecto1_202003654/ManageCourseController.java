@@ -28,6 +28,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.FileChooser;
 import models.Course;
+import models.CourseActivity;
 import models.Student;
 import models.Teacher;
 
@@ -39,7 +40,7 @@ import models.Teacher;
 public class ManageCourseController implements Initializable {
     
     @FXML
-        private TableView<Student> studentsTable;
+    private TableView<Student> studentsTable;
     @FXML
     private TableColumn<Student, Integer> codeColumn;
     @FXML
@@ -50,41 +51,55 @@ public class ManageCourseController implements Initializable {
     private TableColumn<Student, Double> gradesColumn;
     @FXML
     private Label courseNameLabel;
+    @FXML
+    private Label totalActivitiesPointsLabel;
+    @FXML
+    private TableView<CourseActivity> activitiesTable;
+    @FXML
+    private TableColumn<CourseActivity, Integer> activityNameColumn;
+    @FXML
+    private TableColumn<CourseActivity, String> descriptionColumn;
+    @FXML
+    private TableColumn<CourseActivity, String> pointsColumn;
     public Course selectedCourse;
     private static Student[] students = new Student[100];
     private static Student studentSelected;
+    private static double totalActivitiesPoints = 0.00;
+    private static CourseActivity[] courseActivities = new CourseActivity[100];
     
-    @Override
-    public void initialize(URL url, ResourceBundle rb) {
-        // Get the selected course from TeacherMenuController
-        selectedCourse = TeacherMenuController.getSelectedCourse();
-        System.out.println("Selected course: " + selectedCourse.getCode() + " - " + selectedCourse.getName());
+@Override
+public void initialize(URL url, ResourceBundle rb) {
+    // Set the course name on the label
+    selectedCourse = TeacherMenuController.getSelectedCourse();
+    courseNameLabel.setText(selectedCourse.getName());
+    totalActivitiesPointsLabel.setText(Double.toString(totalActivitiesPoints));
+    // Configure the cell value factories for each column
+    codeColumn.setCellValueFactory(new PropertyValueFactory<>("code"));
+    nameColumn.setCellValueFactory(new PropertyValueFactory<>("firstName"));
+    lastNameColumn.setCellValueFactory(new PropertyValueFactory<>("lastName"));
+    gradesColumn.setCellValueFactory(new PropertyValueFactory<>("grades"));
 
-        // Set the course name on the label
-        courseNameLabel.setText(selectedCourse.getName());
+    // Configure the cell value factories for activity table columns
+    activityNameColumn.setCellValueFactory(new PropertyValueFactory<>("activityName"));
+    descriptionColumn.setCellValueFactory(new PropertyValueFactory<>("activityDescription"));
+    pointsColumn.setCellValueFactory(new PropertyValueFactory<>("activityValue"));
 
-        // Configure the cell value factories for each column
-        codeColumn.setCellValueFactory(new PropertyValueFactory<>("code"));
-        nameColumn.setCellValueFactory(new PropertyValueFactory<>("firstName"));
-        lastNameColumn.setCellValueFactory(new PropertyValueFactory<>("lastName"));
-        gradesColumn.setCellValueFactory(new PropertyValueFactory<>("grades"));
+    // Populate the tables with the data
+    updateStudentsTable();
+    updateActivitiesTable();
+}
 
-        // Populate the table with the students array
-        updateStudentsTable();
+// ...
 
-        // Add action listener to select student from the table
-        studentsTable.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
-            if (newSelection != null) {
-                ManageCourseController.studentSelected = newSelection;
-                try {
-                    App.setRoot("manageStudent");
-                } catch (IOException ex) {
-                    ex.printStackTrace();
-                }
-                
-            }
-        });
+private void updateActivitiesTable() {
+    activitiesTable.getItems().clear();
+
+    for (CourseActivity activity : courseActivities) {
+        if (activity != null) {
+            activitiesTable.getItems().add(activity);
+        }
     }
+}
     
     private void updateStudentsTable() {
         studentsTable.getItems().clear();
@@ -100,7 +115,11 @@ public class ManageCourseController implements Initializable {
         return studentSelected;
     }
     
-        // Method to delete a selected student from the students array
+    public static double getTotalActivitiesPoints() {
+        return totalActivitiesPoints;
+    }
+    
+    // Method to delete a selected student from the students array
     public static void deleteSelectedStudent() {
         if (studentSelected != null) {
             for (int i = 0; i < students.length; i++) {
@@ -112,6 +131,31 @@ public class ManageCourseController implements Initializable {
             studentSelected = null;
         }
     }
+    
+    public static void addCourseActivity(CourseActivity activity) {
+        if (activity.getCourseCode() == -1) {
+            // Generate a new code based on the number of items in courseActivities
+            int newCode = courseActivities.length;
+            activity.setCourseCode(newCode);
+        }
+
+        for (int i = 0; i < courseActivities.length; i++) {
+            if (courseActivities[i] == null) {
+                courseActivities[i] = activity;
+                break;
+            }
+        }
+
+        // Recalculate the totalActivitiesPoints
+        totalActivitiesPoints = 0;
+        for (CourseActivity courseActivity : courseActivities) {
+            if (courseActivity != null) {
+                totalActivitiesPoints += courseActivity.getActivityValue();
+            }
+        }
+    }
+
+    
     @FXML
     public void onLogout(ActionEvent event) throws IOException {
         App.setRoot("login");
@@ -124,6 +168,7 @@ public class ManageCourseController implements Initializable {
     
     @FXML
     public void onCreateActivity(ActionEvent event) throws IOException {
+        App.setRoot("createActivity");
     }
 
     @FXML
@@ -210,81 +255,79 @@ public class ManageCourseController implements Initializable {
     }
 
     @FXML
-public void downloadTopStudents(ActionEvent event) throws IOException {
-    // Get the top 3 students with the best grades
-    Student[] topStudents = new Student[3];
-    int topStudentsCount = 0;
+    public void downloadTopStudents(ActionEvent event) throws IOException {
+        // Get the top 3 students with the best grades
+        Student[] topStudents = new Student[3];
+        int topStudentsCount = 0;
 
-    for (Student student : students) {
-        if (student != null) {
-            if (topStudentsCount < 3) {
-                topStudents[topStudentsCount] = student;
-                topStudentsCount++;
-            } else {
-                // Sort the top students based on grades
-                for (int i = 0; i < 3; i++) {
-                    if (student.getGrades() > topStudents[i].getGrades()) {
-                        // Shift the students to make room for the new student
-                        for (int j = 2; j > i; j--) {
-                            topStudents[j] = topStudents[j - 1];
+        for (Student student : students) {
+            if (student != null) {
+                if (topStudentsCount < 3) {
+                    topStudents[topStudentsCount] = student;
+                    topStudentsCount++;
+                } else {
+                    // Sort the top students based on grades
+                    for (int i = 0; i < 3; i++) {
+                        if (student.getGrades() > topStudents[i].getGrades()) {
+                            // Shift the students to make room for the new student
+                            for (int j = 2; j > i; j--) {
+                                topStudents[j] = topStudents[j - 1];
+                            }
+                            // Insert the new student at the appropriate position
+                            topStudents[i] = student;
+                            break;
                         }
-                        // Insert the new student at the appropriate position
-                        topStudents[i] = student;
-                        break;
                     }
                 }
             }
         }
-    }
 
-    // Print the top students with the highest grades
-    System.out.println("Top Students:");
-    for (Student student : topStudents) {
-        if (student != null) {
-            System.out.println(student.getFirstName() + " " + student.getLastName() + " - Grades: " + student.getGrades());
-        }
-    }
-
-    // Generate the HTML content for the top students
-    StringBuilder htmlContent = new StringBuilder();
-    htmlContent.append("<html><body><h1>Top 3 Students</h1><ol>");
-
-    for (Student student : topStudents) {
-        if (student != null) {
-            htmlContent.append("<li>")
-                    .append(student.getFirstName())
-                    .append(" ")
-                    .append(student.getLastName())
-                    .append(" - Grades: ")
-                    .append(student.getGrades())
-                    .append("</li>");
-        }
-    }
-
-    htmlContent.append("</ol></body></html>");
-
-    // Prompt the user to choose the file location
-    FileChooser fileChooser = new FileChooser();
-    fileChooser.setTitle("Save Top Students");
-    fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("HTML Files", "*.html"));
-    File file = fileChooser.showSaveDialog(null);
-
-    if (file != null) {
-        // Write the HTML content to the selected file
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
-            writer.write(htmlContent.toString());
+        // Print the top students with the highest grades
+        System.out.println("Top Students:");
+        for (Student student : topStudents) {
+            if (student != null) {
+                System.out.println(student.getFirstName() + " " + student.getLastName() + " - Grades: " + student.getGrades());
+            }
         }
 
-        // Show success message
-        Alert alert = new Alert(AlertType.INFORMATION);
-        alert.setTitle("Download Successful");
-        alert.setHeaderText(null);
-        alert.setContentText("Top students exported to '" + file.getName() + "'");
-        alert.showAndWait();
+        // Generate the HTML content for the top students
+        StringBuilder htmlContent = new StringBuilder();
+        htmlContent.append("<html><body><h1>Top 3 Students</h1><ol>");
+
+        for (Student student : topStudents) {
+            if (student != null) {
+                htmlContent.append("<li>")
+                        .append(student.getFirstName())
+                        .append(" ")
+                        .append(student.getLastName())
+                        .append(" - Grades: ")
+                        .append(student.getGrades())
+                        .append("</li>");
+            }
+        }
+
+        htmlContent.append("</ol></body></html>");
+
+        // Prompt the user to choose the file location
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Save Top Students");
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("HTML Files", "*.html"));
+        File file = fileChooser.showSaveDialog(null);
+
+        if (file != null) {
+            // Write the HTML content to the selected file
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
+                writer.write(htmlContent.toString());
+            }
+
+            // Show success message
+            Alert alert = new Alert(AlertType.INFORMATION);
+            alert.setTitle("Download Successful");
+            alert.setHeaderText(null);
+            alert.setContentText("Top students exported to '" + file.getName() + "'");
+            alert.showAndWait();
+        }
     }
-}
-
-
 
     @FXML
     public void downloadWorstStudents(ActionEvent event) throws IOException {
