@@ -25,9 +25,9 @@
       <TableView fx:id="coursesTable" layoutX="30.0" layoutY="127.0" prefHeight="560.0" prefWidth="536.0">
          <columns>
             <TableColumn fx:id="codeColumn" prefWidth="62.0" text="Codigo" />
-            <TableColumn fx:id="nameColumn" prefWidth="98.0" text="Nombre" />
-            <TableColumn fx:id="creditsColumn" prefWidth="108.0" text="Creditos" />
-            <TableColumn fx:id="studentsColumn" prefWidth="162.0" text="Alumnos" />
+            <TableColumn fx:id="nameColumn" prefWidth="159.0" text="Nombre" />
+            <TableColumn fx:id="creditsColumn" prefWidth="101.0" text="Creditos" />
+            <TableColumn fx:id="studentsColumn" prefWidth="108.0" text="Alumnos" />
             <TableColumn fx:id="teacherColumn" prefWidth="105.0" text="Profesor" />
          </columns>
       </TableView>

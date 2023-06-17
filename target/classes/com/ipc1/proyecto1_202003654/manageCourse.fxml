@@ -2,19 +2,128 @@
 
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 
-
-<AnchorPane id="AnchorPane" prefHeight="700.0" prefWidth="900.0" style="-fx-background-color: white;" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/20.0.1" fx:controller="com.ipc1.proyecto1_202003654.ManageCourseController">
+<AnchorPane id="AnchorPane" prefHeight="700.0" prefWidth="900.0" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.ipc1.proyecto1_202003654.ManageCourseController">
    <children>
-      <Label fx:id="courseNameLabel" layoutX="353.0" layoutY="54.0" prefHeight="46.0" prefWidth="194.0">
+      <Label fx:id="courseNameLabel" layoutX="84.0" layoutY="22.0" prefHeight="46.0" prefWidth="733.0" style="-fx-text-alignment: center;">
          <font>
             <Font size="38.0" />
          </font>
       </Label>
+      <Label layoutX="14.0" layoutY="91.0" text="Listado de alumnos">
+         <font>
+            <Font size="24.0" />
+         </font>
+      </Label>
+      <TableView fx:id="studentsTable" layoutX="15.0" layoutY="131.0" prefHeight="499.0" prefWidth="537.0">
+         <columns>
+            <TableColumn fx:id="codeColumn" prefWidth="62.0" text="Codigo" />
+            <TableColumn fx:id="nameColumn" prefWidth="183.0" text="Nombre" />
+            <TableColumn fx:id="lastNameColumn" prefWidth="179.0" text="Apellido" />
+            <TableColumn fx:id="gradesColumn" prefWidth="111.0" text="Puntos" />
+         </columns>
+      </TableView>
+      <Label layoutX="566.0" layoutY="91.0" text="Actividades">
+         <font>
+            <Font size="24.0" />
+         </font>
+      </Label>
+      <TableView fx:id="studentsTable1" layoutX="566.0" layoutY="131.0" prefHeight="194.0" prefWidth="320.0">
+         <columns>
+            <TableColumn fx:id="codeColumn1" prefWidth="76.0" text="Nombre" />
+            <TableColumn fx:id="nameColumn1" prefWidth="158.0" text="Decripcion" />
+            <TableColumn fx:id="gradesColumn1" prefWidth="81.0" text="Puntos" />
+         </columns>
+      </TableView>
+      <Label layoutX="717.0" layoutY="330.0" text="Acumulado">
+         <font>
+            <Font size="16.0" />
+         </font>
+      </Label>
+      <Label layoutX="832.0" layoutY="330.0" prefHeight="20.0" prefWidth="54.0">
+         <font>
+            <Font size="16.0" />
+         </font>
+      </Label>
+      <Button fx:id="createButton" layoutX="566.0" layoutY="363.0" mnemonicParsing="false" onAction="#onCreateActivity" prefHeight="60.0" prefWidth="320.0" style="-fx-background-color: white; -fx-border-color: black; -fx-border-radius: 5px;">
+         <graphic>
+            <Pane prefHeight="49.0" prefWidth="146.0">
+               <children>
+                  <Label layoutX="82.0" layoutY="12.0" text="Crear Actividad">
+                     <font>
+                        <Font size="23.0" />
+                     </font>
+                  </Label>
+                  <ImageView fitHeight="52.0" fitWidth="54.0" layoutX="3.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../../../assets/target-04-svgrepo-com.png" />
+                     </image>
+                  </ImageView>
+               </children>
+            </Pane>
+         </graphic>
+      </Button>
+      <Button fx:id="uplloadStudentsButton" layoutX="566.0" layoutY="433.0" mnemonicParsing="false" onAction="#onUploadStudents" prefHeight="60.0" prefWidth="320.0" style="-fx-background-color: white; -fx-border-color: black; -fx-border-radius: 5px;">
+         <graphic>
+            <Pane prefHeight="49.0" prefWidth="146.0">
+               <children>
+                  <Label layoutX="82.0" layoutY="12.0" text="Carga masiva">
+                     <font>
+                        <Font size="23.0" />
+                     </font>
+                  </Label>
+                  <ImageView fitHeight="52.0" fitWidth="54.0" layoutX="3.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../../../assets/students-on-lecture-svgrepo-com.png" />
+                     </image>
+                  </ImageView>
+               </children>
+            </Pane>
+         </graphic>
+      </Button>
+      <Button fx:id="downloadTopButton" layoutX="566.0" layoutY="502.0" mnemonicParsing="false" onAction="#downloadTopStudents" prefHeight="60.0" prefWidth="320.0" style="-fx-background-color: white; -fx-border-color: black; -fx-border-radius: 5px;">
+         <graphic>
+            <Pane prefHeight="49.0" prefWidth="146.0">
+               <children>
+                  <Label layoutX="82.0" layoutY="12.0" text="Top estudiantes">
+                     <font>
+                        <Font size="23.0" />
+                     </font>
+                  </Label>
+                  <ImageView fitHeight="52.0" fitWidth="54.0" layoutX="3.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../../../assets/podium-svgrepo-com.png" />
+                     </image>
+                  </ImageView>
+               </children>
+            </Pane>
+         </graphic>
+      </Button>
+      <Button fx:id="downloadWorstButton" layoutX="566.0" layoutY="572.0" mnemonicParsing="false" onAction="#dowloadWorstStudents" prefHeight="60.0" prefWidth="320.0" style="-fx-background-color: white; -fx-border-color: black; -fx-border-radius: 5px;">
+         <graphic>
+            <Pane prefHeight="49.0" prefWidth="146.0">
+               <children>
+                  <Label layoutX="82.0" layoutY="12.0" text="Peores estudiantes">
+                     <font>
+                        <Font size="23.0" />
+                     </font>
+                  </Label>
+                  <ImageView fitHeight="52.0" fitWidth="54.0" layoutX="3.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../../../assets/thumbs-down-svgrepo-com.png" />
+                     </image>
+                  </ImageView>
+               </children>
+            </Pane>
+         </graphic>
+      </Button>
       <Button fx:id="backButton" layoutX="762.0" layoutY="640.0" mnemonicParsing="false" onAction="#onBack" prefHeight="46.0" prefWidth="45.0" style="-fx-border-radius: 50%; -fx-border-color: black; -fx-background-color: white;">
          <graphic>
             <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
