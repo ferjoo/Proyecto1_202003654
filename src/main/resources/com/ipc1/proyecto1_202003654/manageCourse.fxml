@@ -106,7 +106,7 @@
             </Pane>
          </graphic>
       </Button>
-      <Button fx:id="downloadWorstButton" layoutX="566.0" layoutY="572.0" mnemonicParsing="false" onAction="#dowloadWorstStudents" prefHeight="60.0" prefWidth="320.0" style="-fx-background-color: white; -fx-border-color: black; -fx-border-radius: 5px;">
+      <Button fx:id="downloadWorstButton" layoutX="566.0" layoutY="572.0" mnemonicParsing="false" onAction="#downloadWorstStudents" prefHeight="60.0" prefWidth="320.0" style="-fx-background-color: white; -fx-border-color: black; -fx-border-radius: 5px;">
          <graphic>
             <Pane prefHeight="49.0" prefWidth="146.0">
                <children>

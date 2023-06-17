@@ -11,7 +11,10 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URL;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
+import java.util.PriorityQueue;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -49,37 +52,66 @@ public class ManageCourseController implements Initializable {
     private Label courseNameLabel;
     public Course selectedCourse;
     private static Student[] students = new Student[100];
+    private static Student studentSelected;
     
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-    // Get the selected course from TeacherMenuController
-    selectedCourse = TeacherMenuController.getSelectedCourse();
-    System.out.println("Selected course: " + selectedCourse.getCode() + " - " + selectedCourse.getName());
+        // Get the selected course from TeacherMenuController
+        selectedCourse = TeacherMenuController.getSelectedCourse();
+        System.out.println("Selected course: " + selectedCourse.getCode() + " - " + selectedCourse.getName());
 
-    // Set the course name on the label
-    courseNameLabel.setText(selectedCourse.getName());
+        // Set the course name on the label
+        courseNameLabel.setText(selectedCourse.getName());
 
-    // Configure the cell value factories for each column
-    codeColumn.setCellValueFactory(new PropertyValueFactory<>("code"));
-    nameColumn.setCellValueFactory(new PropertyValueFactory<>("firstName"));
-    lastNameColumn.setCellValueFactory(new PropertyValueFactory<>("lastName"));
-    gradesColumn.setCellValueFactory(new PropertyValueFactory<>("grades"));
+        // Configure the cell value factories for each column
+        codeColumn.setCellValueFactory(new PropertyValueFactory<>("code"));
+        nameColumn.setCellValueFactory(new PropertyValueFactory<>("firstName"));
+        lastNameColumn.setCellValueFactory(new PropertyValueFactory<>("lastName"));
+        gradesColumn.setCellValueFactory(new PropertyValueFactory<>("grades"));
 
-    // Populate the table with the students array
-    updateStudentsTable();
+        // Populate the table with the students array
+        updateStudentsTable();
+
+        // Add action listener to select student from the table
+        studentsTable.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
+            if (newSelection != null) {
+                ManageCourseController.studentSelected = newSelection;
+                try {
+                    App.setRoot("manageStudent");
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
+                
+            }
+        });
     }
     
     private void updateStudentsTable() {
-    studentsTable.getItems().clear();
+        studentsTable.getItems().clear();
 
-    for (Student student : students) {
-        if (student != null) {
-            studentsTable.getItems().add(student);
+        for (Student student : students) {
+            if (student != null) {
+                studentsTable.getItems().add(student);
+            }
         }
     }
-}
-
     
+    public static Student getStudentSelected() {
+        return studentSelected;
+    }
+    
+        // Method to delete a selected student from the students array
+    public static void deleteSelectedStudent() {
+        if (studentSelected != null) {
+            for (int i = 0; i < students.length; i++) {
+                if (students[i] == studentSelected) {
+                    students[i] = null;
+                    break;
+                }
+            }
+            studentSelected = null;
+        }
+    }
     @FXML
     public void onLogout(ActionEvent event) throws IOException {
         App.setRoot("login");
@@ -178,101 +210,117 @@ public class ManageCourseController implements Initializable {
     }
 
     @FXML
-    public void downloadTopStudents(ActionEvent event) throws IOException {
-        // Get the top 3 students with the best grades
-        Student[] topStudents = new Student[3];
-        int topStudentsCount = 0;
+public void downloadTopStudents(ActionEvent event) throws IOException {
+    // Get the top 3 students with the best grades
+    Student[] topStudents = new Student[3];
+    int topStudentsCount = 0;
 
-        for (Student student : students) {
-            if (student != null) {
-                if (topStudentsCount < 3) {
-                    topStudents[topStudentsCount] = student;
-                    topStudentsCount++;
-                } else {
-                    // Find the minimum grade among the top students
-                    double minGrade = topStudents[0].getGrades();
-                    int minIndex = 0;
-                    for (int i = 1; i < 3; i++) {
-                        if (topStudents[i].getGrades() < minGrade) {
-                            minGrade = topStudents[i].getGrades();
-                            minIndex = i;
+    for (Student student : students) {
+        if (student != null) {
+            if (topStudentsCount < 3) {
+                topStudents[topStudentsCount] = student;
+                topStudentsCount++;
+            } else {
+                // Sort the top students based on grades
+                for (int i = 0; i < 3; i++) {
+                    if (student.getGrades() > topStudents[i].getGrades()) {
+                        // Shift the students to make room for the new student
+                        for (int j = 2; j > i; j--) {
+                            topStudents[j] = topStudents[j - 1];
                         }
-                    }
-
-                    // Replace the student with the minimum grade if the current student has a higher grade
-                    if (student.getGrades() > minGrade) {
-                        topStudents[minIndex] = student;
+                        // Insert the new student at the appropriate position
+                        topStudents[i] = student;
+                        break;
                     }
                 }
             }
         }
+    }
 
-        // Generate the HTML content for the top students
-        StringBuilder htmlContent = new StringBuilder();
-        htmlContent.append("<html><body><h1>Top 3 Students</h1><ol>");
-
-        for (Student student : topStudents) {
-            if (student != null) {
-                htmlContent.append("<li>")
-                        .append(student.getFirstName())
-                        .append(" ")
-                        .append(student.getLastName())
-                        .append(" - Grades: ")
-                        .append(student.getGrades())
-                        .append("</li>");
-            }
-        }
-
-        htmlContent.append("</ol></body></html>");
-
-        // Prompt the user to choose the file location
-        FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Save Top Students");
-        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("HTML Files", "*.html"));
-        File file = fileChooser.showSaveDialog(null);
-
-        if (file != null) {
-            // Write the HTML content to the selected file
-            try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
-                writer.write(htmlContent.toString());
-            }
-
-            // Show success message
-            Alert alert = new Alert(AlertType.INFORMATION);
-            alert.setTitle("Download Successful");
-            alert.setHeaderText(null);
-            alert.setContentText("Top students exported to '" + file.getName() + "'");
-            alert.showAndWait();
+    // Print the top students with the highest grades
+    System.out.println("Top Students:");
+    for (Student student : topStudents) {
+        if (student != null) {
+            System.out.println(student.getFirstName() + " " + student.getLastName() + " - Grades: " + student.getGrades());
         }
     }
+
+    // Generate the HTML content for the top students
+    StringBuilder htmlContent = new StringBuilder();
+    htmlContent.append("<html><body><h1>Top 3 Students</h1><ol>");
+
+    for (Student student : topStudents) {
+        if (student != null) {
+            htmlContent.append("<li>")
+                    .append(student.getFirstName())
+                    .append(" ")
+                    .append(student.getLastName())
+                    .append(" - Grades: ")
+                    .append(student.getGrades())
+                    .append("</li>");
+        }
+    }
+
+    htmlContent.append("</ol></body></html>");
+
+    // Prompt the user to choose the file location
+    FileChooser fileChooser = new FileChooser();
+    fileChooser.setTitle("Save Top Students");
+    fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("HTML Files", "*.html"));
+    File file = fileChooser.showSaveDialog(null);
+
+    if (file != null) {
+        // Write the HTML content to the selected file
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
+            writer.write(htmlContent.toString());
+        }
+
+        // Show success message
+        Alert alert = new Alert(AlertType.INFORMATION);
+        alert.setTitle("Download Successful");
+        alert.setHeaderText(null);
+        alert.setContentText("Top students exported to '" + file.getName() + "'");
+        alert.showAndWait();
+    }
+}
+
+
 
     @FXML
     public void downloadWorstStudents(ActionEvent event) throws IOException {
         // Get the top 3 students with the worst grades
         Student[] worstStudents = new Student[3];
-        int worstStudentsCount = 0;
+        int maxStudents = 3;
 
         for (Student student : students) {
             if (student != null) {
-                if (worstStudentsCount < 3) {
-                    worstStudents[worstStudentsCount] = student;
-                    worstStudentsCount++;
+                if (worstStudents[0] == null) {
+                    worstStudents[0] = student;
                 } else {
-                    // Find the maximum grade among the worst students
-                    double maxGrade = worstStudents[0].getGrades();
-                    int maxIndex = 0;
-                    for (int i = 1; i < 3; i++) {
-                        if (worstStudents[i].getGrades() > maxGrade) {
-                            maxGrade = worstStudents[i].getGrades();
-                            maxIndex = i;
-                        }
+                    // Find the position to insert the student based on grades
+                    int insertIndex = 0;
+                    while (insertIndex < maxStudents && worstStudents[insertIndex] != null && student.getGrades() >= worstStudents[insertIndex].getGrades()) {
+                        insertIndex++;
                     }
 
-                    // Replace the student with the maximum grade if the current student has a lower grade
-                    if (student.getGrades() < maxGrade) {
-                        worstStudents[maxIndex] = student;
+                    if (insertIndex < maxStudents) {
+                        // Shift the students to make room for the new student
+                        for (int i = maxStudents - 1; i > insertIndex; i--) {
+                            worstStudents[i] = worstStudents[i - 1];
+                        }
+
+                        // Insert the new student at the appropriate position
+                        worstStudents[insertIndex] = student;
                     }
                 }
+            }
+        }
+
+        // Print the sorted values
+        System.out.println("Sorted Worst Students:");
+        for (Student student : worstStudents) {
+            if (student != null) {
+                System.out.println(student.getFirstName() + " " + student.getLastName() + " - Grades: " + student.getGrades());
             }
         }
 
