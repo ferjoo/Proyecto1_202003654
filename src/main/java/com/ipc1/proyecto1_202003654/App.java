@@ -30,6 +30,10 @@ public class App extends Application {
     private static Teacher currentTeacherSession;
     private static Course[] teacherSessionCourses = new Course[100];
 
+    public static void main(String[] args) {
+        launch();
+    }
+
     @Override
     public void start(Stage stage) throws IOException {
         scene = new Scene(loadFXML("login"), 900, 700);
@@ -45,10 +49,6 @@ public class App extends Application {
         FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource(fxml + ".fxml"));
         return fxmlLoader.load();
     }
-
-    public static void main(String[] args) {
-        launch();
-    }
     
     // Current Teacher methods
     
@@ -56,24 +56,24 @@ public class App extends Application {
         return currentTeacherSession;
     }
 
-public static void setCurrentTeacherSession(Teacher teacher) {
-    currentTeacherSession = teacher;
-    System.out.println("Current Teacher Session: " + teacher.getFirstName() + " " + teacher.getLastName());
+    public static void setCurrentTeacherSession(Teacher teacher) {
+        currentTeacherSession = teacher;
+        System.out.println("Current Teacher Session: " + teacher.getFirstName() + " " + teacher.getLastName());
 
-    // Reset the teacherSessionCourses array
-    teacherSessionCourses = new Course[100];
+        // Reset the teacherSessionCourses array
+        teacherSessionCourses = new Course[100];
 
-    // Populate teacherSessionCourses with courses associated with the current teacher session
-    int teacherCode = teacher.getCode();
-    int courseIndex = 0;
+        // Populate teacherSessionCourses with courses associated with the current teacher session
+        int teacherCode = teacher.getCode();
+        int courseIndex = 0;
 
-    for (Course course : courses) {
-        if (course != null && course.getTeacherCode() == teacherCode) {
-            teacherSessionCourses[courseIndex] = course;
-            courseIndex++;
+        for (Course course : courses) {
+            if (course != null && course.getTeacherCode() == teacherCode) {
+                teacherSessionCourses[courseIndex] = course;
+                courseIndex++;
+            }
         }
     }
-}
 
     
     public static Course[] getTeacherSessionCourses() {
@@ -391,7 +391,6 @@ public static void setCurrentTeacherSession(Teacher teacher) {
             errorAlert.showAndWait();
         }
     }
-
 
     public static void exportCoursesToHTML(String filePath) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath))) {
